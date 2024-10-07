@@ -1,23 +1,22 @@
 {
-    "baseBranches": ["main"],
-    "dependencyDashboard": true,
-    "rebaseWhen": "conflicted",
-    "labels": ["dependencies"],
-    "automergeStrategy": "merge-commit",
-    "includeForks": true,
-    "packageRules": [
-      {
-        "matchCategories": ["docker"],
-        "separateMinorPatch": true
-      },
-      {
-        "matchManagers": ["github-actions"],
-        "matchUpdateTypes": ["minor", "patch"],
-        "automerge": true,
-        "autoApprove": true,
-        "pinDigests": true,
-        "schedule": ["every weekday after 4am"]
-      }
-    ]
-  }
-  
+  "baseBranches": ["main"],
+  "dependencyDashboard": true,
+  "rebaseWhen": "conflicted",
+  "labels": ["dependencies"],
+  "automergeStrategy": "merge-commit",
+  "includeForks": true,
+  "packageRules": [
+    {
+      "matchCategories": ["docker"],
+      "separateMinorPatch": true
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "autoApprove": true,
+      "pinDigests": true,
+      "schedule": ["every weekday after 4am"]
+    }
+  ]
+}
