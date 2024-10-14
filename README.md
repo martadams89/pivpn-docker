@@ -1,6 +1,6 @@
 # pivpn for docker
-<a href="https://hub.docker.com/repository/docker/archef2000/pivpn">Docker Container</a> for <a href="https://github.com/pivpn/pivpn">PIVPN</a>
 
+<a href="https://hub.docker.com/repository/docker/archef2000/pivpn">Docker Container</a> for <a href="https://github.com/pivpn/pivpn">PIVPN</a>
 
 [![Docker PIVPN](https://github.com/Archef2000/pivpn-docker/actions/workflows/main.yml/badge.svg)](https://github.com/Archef2000/pivpn-docker/actions/workflows/main.yml)
 
@@ -17,17 +17,21 @@ Docker Container for <a href="https://github.com/pivpn/pivpn">PIVPN</a>
 <a href="https://github.com/Archef2000/pivpn-docker/">Github</a>
 
 Following errors are known and solved in other ways but still shown
+
 ```sh
 Failed to connect to bus: No such file or directory
 ```
+
 ```sh
 ./easyrsa: 341: set: Illegal option -o echo
 ```
 
 ## docker-compose
+
 ## Openvpn
+
 ```yaml
-version: '3'
+version: "3"
 services:
   openvpn:
     image: archef2000/pivpn:latest
@@ -43,7 +47,7 @@ services:
       - PROTO=udp # or tcp
       - VPN=openvpn
       - PORT=1194
-# optional
+      # optional
       - CLIENT_NAME=pivpn
       - NET=10.8.0.0
       - TWO_POINT_FOUR=1 # or 0 If TWO_POINT_FOUR=0 then ENCRYPT needs to be 2048, 3072, or 4096
@@ -53,9 +57,11 @@ services:
     privileged: true # Is needed to run Openvpn
     restart: always
 ```
+
 ## Wireguard
+
 ```yaml
-version: '3'
+version: "3"
 services:
   wireguard:
     image: archef2000/pivpn:latest
@@ -70,7 +76,7 @@ services:
       - HOST=example.com
       - VPN=wireguard
       - PORT=51820
-# optional
+      # optional
       - CLIENT_NAME=pivpn
       - NET=10.8.0.0
       - DNS1=1.1.1.1 # Client DNS
@@ -80,7 +86,9 @@ services:
       - SYS_MODULE
     restart: always
 ```
+
 ## Docker Run
+
 ```bash
 docker run -d --privileged \
 -v ./openvpn/openvpn:/etc/openvpn -v ./openvpn/pivpn:/etc/pivpn/openvpn -v ./openvpn/ovpns:/home/pivpn/ovpns \
@@ -88,6 +96,7 @@ docker run -d --privileged \
 ```
 
 ## Environment Variables:
+
 ```
 pivpnHOST=example.com
 pivpnPROTO=udp
