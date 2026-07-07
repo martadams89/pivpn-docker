@@ -1,11 +1,17 @@
-FROM alpine AS builder
+FROM alpine:3.24 AS builder
 RUN apk add git ca-certificates > /dev/null 2>/dev/null
 RUN git clone https://github.com/pivpn/pivpn.git /clone
 
 FROM debian:stable-slim
 
-RUN adduser --home /home/pivpn --disabled-password pivpn \
-    && apt-get update && apt-get install -y -f --no-install-recommends wireguard-tools qrencode gnupg \
+# checkov:skip=CKV_DOCKER_3: this is a VPN gateway - wireguard/openvpn/iptables
+# need root and CAP_NET_ADMIN, the pivpn user above is for interactive shell
+# access only, not the running server process.
+# checkov:skip=CKV2_DOCKER_1: sudo is installed as a package for the pivpn
+# user's interactive shell (see run/sh scripts), it isn't invoked at build time.
+RUN apt-get update && apt-get install -y --no-install-recommends adduser \
+    && adduser --home /home/pivpn --disabled-password pivpn \
+    && apt-get install -y -f --no-install-recommends wireguard-tools qrencode gnupg \
     openvpn grepcidr expect curl nano sudo bsdmainutils bash-completion cron ca-certificates iproute2 \
     net-tools iptables-persistent apt-transport-https whiptail dnsutils grep dhcpcd5 iptables-persistent
 
@@ -14,10 +20,12 @@ COPY sh/ /usr/local/bin/
 COPY crontab /etc/cron.d/update
 COPY  --from=builder /clone /usr/local/src/pivpn
 COPY run .
-    
+
 RUN chmod 0644 /etc/cron.d/update && crontab /etc/cron.d/update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/tmp/* /etc/pivpn/openvpn/* /etc/openvpn/* /etc/wireguard/* /tmp/* || true \
     && chmod +x /home/pivpn/run /usr/local/bin/*
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD pgrep cron || exit 1
 
 ENTRYPOINT ["./run"]

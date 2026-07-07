@@ -16,21 +16,19 @@ on:
   workflow_dispatch:
 
 jobs:
-  # lint:
-  #   if: ${{ !startsWith(github.event.head_commit.message, 'docs') }} # skip on documentation
-  #   uses: ./.github/workflows/lint.yaml
-  #   secrets: inherit # pass all secrets to the called workflow
+  # lint job intentionally disabled: MegaLinter config lives at
+  # .github/workflows/lint.off (renamed so GitHub won't run it) - not
+  # re-enabled here, this repo is mostly shell scripts it isn't tuned for.
 
-  # test:
-  #   if: ${{ !startsWith(github.event.head_commit.message, 'docs') }} # skip on documentation
-  #   uses: ./.github/workflows/test.yaml
-  #   # needs: [lint]
-  #   secrets: inherit # pass all secrets to the called workflow
+  test:
+    if: ${{ !startsWith(github.event.pull_request.title || github.event.head_commit.message || '', 'docs') }}
+    uses: ./.github/workflows/test.yaml
+    secrets: inherit # pass all secrets to the called workflow
 
   build:
-    if: ${{ !startsWith(github.event.head_commit.message, 'docs') }} # skip on documentation
+    if: ${{ !startsWith(github.event.pull_request.title || github.event.head_commit.message || '', 'docs') }}
     uses: ./.github/workflows/reusable_docker-build-and-push.yaml
-    # needs: [test]
+    needs: [test]
     secrets: inherit # pass all secrets to the called workflow
     with:
       # publish only on push to main or develop (releases are handled in another workflow)
