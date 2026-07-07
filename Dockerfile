@@ -4,8 +4,9 @@ RUN git clone https://github.com/pivpn/pivpn.git /clone
 
 FROM debian:stable-slim
 
-RUN adduser --home /home/pivpn --disabled-password pivpn \
-    && apt-get update && apt-get install -y -f --no-install-recommends wireguard-tools qrencode gnupg \
+RUN apt-get update && apt-get install -y --no-install-recommends adduser \
+    && adduser --home /home/pivpn --disabled-password pivpn \
+    && apt-get install -y -f --no-install-recommends wireguard-tools qrencode gnupg \
     openvpn grepcidr expect curl nano sudo bsdmainutils bash-completion cron ca-certificates iproute2 \
     net-tools iptables-persistent apt-transport-https whiptail dnsutils grep dhcpcd5 iptables-persistent
 
