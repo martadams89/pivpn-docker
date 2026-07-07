@@ -16,6 +16,16 @@ jobs:
         id: rp
         with:
           release-type: simple
+          # The default GITHUB_TOKEN never triggers CI on the PRs it opens,
+          # so the release PR's required checks would never run.
+          token: ${{ secrets.RENOVATE_TOKEN }}
+
+      - name: Enable auto-merge on the release PR
+        if: ${{ steps.rp.outputs.prs_created == 'true' && steps.rp.outputs.pr }}
+        env:
+          GH_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
+        run: gh pr merge --auto --squash "${{ fromJSON(steps.rp.outputs.pr).number }}" --repo "${{ github.repository }}" || true
+
       - uses: actions/checkout@v7
       - name: tag major and minor versions
         if: ${{ steps.rp.outputs.release_created }}
