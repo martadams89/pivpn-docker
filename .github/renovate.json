@@ -1,22 +1,31 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits", ":dependencyDashboard"],
   "baseBranches": ["main"],
-  "dependencyDashboard": true,
-  "rebaseWhen": "conflicted",
   "labels": ["dependencies"],
-  "automergeStrategy": "merge-commit",
   "includeForks": true,
+  "rebaseWhen": "conflicted",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
   "packageRules": [
+    {
+      "description": "Auto-merge everything — major/minor/patch/pin/digest — once required CI is green (test build + Checkov, full multi-arch build). CI is the gate, not semver.",
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
+      "automerge": true,
+      "autoApprove": true,
+      "platformAutomerge": true
+    },
     {
       "matchCategories": ["docker"],
       "separateMinorPatch": true
     },
     {
       "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true,
-      "autoApprove": true,
-      "pinDigests": true,
-      "schedule": ["every weekday after 4am"]
+      "pinDigests": true
     }
-  ]
+  ],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 3
 }
