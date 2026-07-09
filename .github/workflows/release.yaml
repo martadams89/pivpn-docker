@@ -12,7 +12,7 @@ jobs:
       release_created: ${{ steps.rp.outputs.release_created }}
       tag: ${{ steps.rp.outputs.tag_name }}
     steps:
-      - uses: googleapis/release-please-action@v5
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
         id: rp
         with:
           release-type: simple
@@ -26,7 +26,7 @@ jobs:
           GH_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
         run: gh pr merge --auto --squash "${{ fromJSON(steps.rp.outputs.pr).number }}" --repo "${{ github.repository }}" || true
 
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - name: tag major and minor versions
         if: ${{ steps.rp.outputs.release_created }}
         run: |
