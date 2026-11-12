@@ -23,7 +23,7 @@ jobs:
 
       - name: Scan Dockerfile vulnerabilities using Checkov
         id: checkov
-        uses: bridgecrewio/checkov-action@45edc9d8856b664db2ec251f5f8632361f0a67aa # master
+        uses: bridgecrewio/checkov-action@a32f8b5c5c7c958bc38947c65dfe139debaf0607 # master
         with:
           directory: .
           framework: dockerfile
